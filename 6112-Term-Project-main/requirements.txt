@@ -7,3 +7,7 @@ jinja2
 python-dotenv
 requests
 yfinance
+aomysql
+databases
+mysql-connector-python
+argon2-cffi
