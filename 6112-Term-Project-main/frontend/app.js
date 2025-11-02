@@ -82,3 +82,39 @@ loginForm.addEventListener('submit', async (e) => {
         showMessage('✗ Network error. Please try again.', 'danger', messageDiv);
     }
 });
+
+registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById('regUsername').value;
+    const password = document.getElementById('regPassword').value;
+
+    try {
+        const response = await fetch(`${API_BASE}/register_user`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: username,
+                password: password
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showMessage('✓ Registration successful! You can now login.', 'success', registerMessageDiv);
+            // Clear form and close modal after success
+            setTimeout(() => {
+                registerForm.reset();
+                registerModal.classList.add('hidden');
+                registerMessageDiv.classList.add('hidden');
+            }, 2000);
+        } else {
+            showMessage('✗ ' + (data.detail || 'Registration failed'), 'danger', registerMessageDiv);
+        }
+    } catch (error) {
+        showMessage('✗ Network error. Please try again.', 'danger', registerMessageDiv);
+    }
+});
