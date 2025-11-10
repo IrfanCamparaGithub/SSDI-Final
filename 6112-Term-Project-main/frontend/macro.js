@@ -1,4 +1,4 @@
-const API_KEY = 'BNDU5TPXWRQ7S1OK';
+const API_KEY = 'ENV_KEY';
 const BASE = 'https://www.alphavantage.co/query';
 
 const indicatorEl = document.getElementById('indicator');
@@ -57,3 +57,113 @@ function parseSeries(json) {
   }
   return [];
 }
+
+function formatValueLabel(indicator) {
+  switch (indicator) {
+    case 'REAL_GDP': return v => '$' + Intl.NumberFormat().format(v) + 'B';
+    case 'INFLATION':
+    case 'FEDERAL_FUNDS_RATE': return v => (v?.toFixed?.(2) ?? v) + '%';
+    default: return v => String(v);
+  }
+}
+
+function chartOptions(indicator) {
+  const fmt = formatValueLabel(indicator);
+  return {
+    responsive: true,
+    plugins: {
+      legend: { labels: { color: '#e5e7eb' } },
+      tooltip: {
+        mode: 'index',
+        intersect: false,
+        callbacks: {
+          label: (ctx) => `${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { color: '#9ca3af', maxRotation: 0, autoSkip: true },
+        grid: { color: 'rgba(148,163,184,0.15)' }
+      },
+      y: {
+        ticks: {
+          color: '#9ca3af',
+          callback: (v) => fmt(v)
+        },
+        grid: { color: 'rgba(148,163,184,0.15)' },
+        beginAtZero: false
+      }
+    }
+  };
+}
+
+function drawChart(indicator, labels, values) {
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: META[indicator].title,
+        data: values,
+        borderWidth: 3,
+        tension: 0.35,
+        fill: false,
+        borderColor: indicator === 'REAL_GDP' ? '#60a5fa' :
+                    indicator === 'INFLATION' ? '#10b981' : '#f59e0b'
+      }]
+    },
+    options: chartOptions(indicator)
+  });
+}
+
+async function fetchIndicator() {
+  const indicator = indicatorEl.value;
+  const limit = Number(pointsEl.value || 40);
+  const order = sortEl.value; // LATEST or EARLIEST
+
+  statusEl.textContent = 'Fetching…';
+
+  try {
+    const url = buildUrl(META[indicator].fn);
+    const res = await fetch(url);
+    const text = await res.text();
+
+    if (!res.ok) {
+      statusEl.textContent = `Server error: ${res.status}`;
+      console.error(text);
+      return;
+    }
+
+    const json = JSON.parse(text);
+    const series = parseSeries(json);
+    const key = META[indicator].valueKey;
+
+    let rows = series
+      .map(r => ({ date: r.date, value: toNumber(r[key]) }))
+      .filter(r => r.date && r.value != null);
+
+
+    rows.sort((a, b) => (order === 'EARLIEST'
+      ? new Date(a.date) - new Date(b.date)
+      : new Date(b.date) - new Date(a.date)));
+
+
+    rows = rows.slice(0, limit);
+
+
+    rows.reverse();
+    const labels = rows.map(r => r.date);
+    const values = rows.map(r => r.value);
+
+    drawChart(indicator, labels, values);
+    statusEl.textContent = `Showing ${rows.length} points • ${META[indicator].title}`;
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = 'Failed to fetch indicator.';
+  }
+}
+
+fetchBtn.addEventListener('click', fetchIndicator);
+document.addEventListener('DOMContentLoaded', fetchIndicator);
