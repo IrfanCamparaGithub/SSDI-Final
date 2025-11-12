@@ -1,4 +1,4 @@
-const API_KEY = 'BNDU5TPXWRQ7S1OK';
+const API_KEY = 'ENV_KEY';
 const BASE_URL = 'https://www.alphavantage.co/query';
 
 const topicsEl = document.getElementById('topics');
@@ -54,3 +54,85 @@ function topicPills(arr) {
   if (!Array.isArray(arr) || !arr.length) return '';
   return arr.map(t => `<span class="topic-pill">${t}</span>`).join(' ');
 }
+
+function renderArticles(articles) {
+  newsList.innerHTML = '';
+  if (!Array.isArray(articles) || articles.length === 0) {
+    newsList.innerHTML = `<div class="col-12"><div class="card"><div class="card-body">No articles found.</div></div></div>`;
+    return;
+  }
+
+  const frag = document.createDocumentFragment();
+
+  articles.forEach(a => {
+    const title = a.title ?? 'Untitled';
+    const url = a.url ?? '#';
+    const source = a.source ?? a.authors?.[0] ?? 'Unknown';
+    const summary = a.summary ?? '';
+    const img = a.banner_image ?? '';
+    const topics = (a.topics || []).map(x => x.topic).filter(Boolean);
+    const score = typeof a.overall_sentiment_score === 'number' ? a.overall_sentiment_score : null;
+    const conf  = typeof a.overall_sentiment_label_confidence === 'number' ? a.overall_sentiment_label_confidence : null;
+
+    const col = document.createElement('div');
+    col.className = 'col-12';
+
+    col.innerHTML = `
+      <div class="card news-card">
+        <div class="card-body">
+          <div class="d-flex gap-3">
+            ${img ? `<img src="${img}" alt="" style="width:120px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #1f2937;">` : ''}
+            <div class="flex-grow-1">
+              <h5 class="card-title mb-1"><a href="${url}" target="_blank" rel="noopener">${title}</a></h5>
+              <div class="mb-2 muted">Source: ${source}</div>
+              <p class="mb-2" style="white-space:pre-wrap">${summary}</p>
+              <div class="d-flex flex-wrap align-items-center gap-2">
+                ${sentimentBadge(score)}
+                ${confidenceBadge(conf)}
+                ${topicPills(topics)}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    frag.appendChild(col);
+  });
+
+  newsList.appendChild(frag);
+}
+
+async function fetchNews() {
+  const url = buildUrl();
+  statusEl.textContent = 'Fetching latest news...';
+  newsList.innerHTML = '';
+
+  try {
+    const res = await fetch(url);
+    const text = await res.text();
+    if (!res.ok) {
+      statusEl.textContent = `Server error: ${res.status}`;
+      newsList.innerHTML = `<div class="col-12"><div class="card"><div class="card-body">${text}</div></div></div>`;
+      return;
+    }
+
+    const data = JSON.parse(text);
+
+
+    const feed = Array.isArray(data.feed) ? data.feed : [];
+
+    renderArticles(feed);
+    statusEl.textContent = `Showing ${feed.length} articles`;
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = 'Failed to fetch news.';
+    newsList.innerHTML = `<div class="col-12"><div class="card"><div class="card-body">` +
+                         `Error: ${err.message}</div></div></div>`;
+  }
+}
+
+
+fetchBtn.addEventListener('click', fetchNews);
+
+
+document.addEventListener('DOMContentLoaded', fetchNews);
