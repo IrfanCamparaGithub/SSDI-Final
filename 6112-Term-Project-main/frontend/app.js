@@ -1,4 +1,4 @@
-const API_BASE = 'http://127.0.0.1:8003';
+const API_BASE = window.location.origin;
 
 
 const loginForm = document.getElementById('loginForm');
@@ -68,7 +68,7 @@ loginForm.addEventListener('submit', async (e) => {
         const data = await response.json();
 
         if (response.ok) {
-            showMessage('✓ Login successful! Redirecting...', 'success', messageDiv);
+            showMessage(' Login successful! Redirecting...', 'success', messageDiv);
             // Store username for the main page
             localStorage.setItem('username', username);
             // Redirect to main page
@@ -76,10 +76,10 @@ loginForm.addEventListener('submit', async (e) => {
                 window.location.href = '/main.html';
             }, 1500);
         } else {
-            showMessage('✗ ' + (data.detail || 'Login failed'), 'danger', messageDiv);
+            showMessage(' ' + (data.detail || 'Login failed'), 'danger', messageDiv);
         }
     } catch (error) {
-        showMessage('✗ Network error. Please try again.', 'danger', messageDiv);
+        showMessage(' Error. Please try again.', 'danger', messageDiv);
     }
 });
 
@@ -104,7 +104,7 @@ registerForm.addEventListener('submit', async (e) => {
         const data = await response.json();
 
         if (response.ok) {
-            showMessage('✓ Registration successful! You can now login.', 'success', registerMessageDiv);
+            showMessage(' Registration successful! You can now login.', 'success', registerMessageDiv);
             // Clear form and close modal after success
             setTimeout(() => {
                 registerForm.reset();
@@ -112,9 +112,9 @@ registerForm.addEventListener('submit', async (e) => {
                 registerMessageDiv.classList.add('hidden');
             }, 2000);
         } else {
-            showMessage('✗ ' + (data.detail || 'Registration failed'), 'danger', registerMessageDiv);
+            showMessage(' ' + (data.detail || 'Registration failed'), 'danger', registerMessageDiv);
         }
     } catch (error) {
-        showMessage('✗ Network error. Please try again.', 'danger', registerMessageDiv);
+        showMessage(' Error. Please try again.', 'danger', registerMessageDiv);
     }
 });
