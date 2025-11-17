@@ -8,7 +8,8 @@ Follow the instructions below to install and run the application.
 
 ## Prerequisites
 
-- Python 3.x installed  
+- Python 3.x installed
+- mySQL installed
 - pip installed  
 - Git installed  
 
