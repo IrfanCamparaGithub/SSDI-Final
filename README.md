@@ -13,7 +13,8 @@ Follow the instructions below to install and run the application.
 - pip installed  
 - Git installed  
 - Free Alpha Vantage API Key
-  You can request a free API key in less that 20 seconds here: https://www.alphavantage.co/support/#api-key
+
+You can request a free API key in less that 20 seconds here: https://www.alphavantage.co/support/#api-key
 ---
 
 ## Project Structure
