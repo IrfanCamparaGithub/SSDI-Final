@@ -12,8 +12,7 @@ Follow the instructions below to install and run the application.
 - mySQL installed
 - pip installed  
 - Git installed  
-- Free Alpha Vantage API Key
-You can request a free API key in less that 20 seconds here: https://www.alphavantage.co/support/#api-key
+- Alpha Vantage API Key (request a free API key in less that 20 seconds: https://www.alphavantage.co/support/#api-key)
 
 ---
 
