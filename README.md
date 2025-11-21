@@ -89,10 +89,24 @@ If your local MySQL user or password is different, update the connection string 
 ```python
 User_Database_URL = "mysql+mysqlconnector://<user>:<password>@127.0.0.1:3306/6112_Term_Project"
 ```
+Make sure to save your changes
 
 ---
 
-## 5. Run the Application
+## 4. Configure the API Key
+
+
+Modify the first line of macro.js and new.js to contain the API Key requested in prerequisites step.
+
+```javascript
+const API_KEY = 'Enter you API key here';
+```
+
+Make sure to save your changes
+
+---
+
+## 6. Run the Application
 
 From inside `6112-Term-Project-main/` with the virtual environment activated, start the FastAPI app using Uvicorn:
 
@@ -108,7 +122,7 @@ http://127.0.0.1:8000
 
 ---
 
-## 6. Access the Application
+## 7. Access the Application
 
 Once the server is running:
 
