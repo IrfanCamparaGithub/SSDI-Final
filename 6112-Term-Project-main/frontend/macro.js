@@ -1,4 +1,4 @@
-const API_KEY = 'BNDU5TPXWRQ7S1OK';
+const API_KEY = 'Enter you API key here';
 const BASE = 'https://www.alphavantage.co/query';
 
 const indicatorEl = document.getElementById('indicator');
