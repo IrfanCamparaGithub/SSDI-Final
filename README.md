@@ -13,7 +13,7 @@ Follow the instructions below to install and run the application.
 - pip installed  
 - Git installed  
 - Alpha Vantage API Key (request a free API key in less that 20 seconds: https://www.alphavantage.co/support/#api-key)
-- To avoid rate limits we paid for a premium key which is only available till Decemeber 21, 2025
+- To avoid rate limits we paid for a premium key which is only available till December 21, 2025
 - If you would like to avoid rate limits when testing use this premium key: O9LDT1CKLRRERTYF
 
 ---
