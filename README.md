@@ -93,7 +93,7 @@ Make sure to save your changes
 
 ---
 
-## 4. Configure the API Key
+## 5. Configure the API Key
 
 
 Modify the first line of macro.js and new.js to contain the API Key requested in prerequisites step.
