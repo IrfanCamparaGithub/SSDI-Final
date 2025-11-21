@@ -96,7 +96,7 @@ Make sure to save your changes
 ## 5. Configure the API Key
 
 
-Modify the first line of macro.js and new.js to contain the API Key requested in prerequisites step.
+Modify the first line of `macro.js` and `new.js` to contain the API Key requested in prerequisites step.
 
 ```javascript
 const API_KEY = 'Enter you API key here';
